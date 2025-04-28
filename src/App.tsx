@@ -1,9 +1,9 @@
 import { ChangeEvent } from "react";
 import "./App.css";
-import { useUserStore } from "./store/user-store";
+import { useAppStore } from "./store/user-store";
 
 function UpdateUserForm() {
-  const { username, email, setUsername, setEmail } = useUserStore();
+  const { username, email, setUsername, setEmail } = useAppStore();
   return (
     <div>
       <input
@@ -27,7 +27,7 @@ function UpdateUserForm() {
 }
 
 function App() {
-  const { email, username } = useUserStore();
+  const { email, username } = useAppStore();
   return (
     <>
       <p>{email}</p>
