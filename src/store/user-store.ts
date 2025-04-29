@@ -1,31 +1,54 @@
-import { create, StateCreator } from "zustand";
+import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
-export interface UserSlice {
+export interface UserStore {
   username: string;
   email: string;
   setUsername: (username: string) => void;
   setEmail: (email: string) => void;
 }
 
-export interface UserTwoSlice {
-  username: string;
+interface Post {
+  id: number;
+  title: string;
+  content: string;
 }
 
-export const createUserSlice: StateCreator<UserSlice> = (set) => ({
-  username: "John Doe",
-  email: "",
-  setUsername: (username: string) => set(() => ({ username })),
-  setEmail: (email: string) => set(() => ({ email })),
-});
+export interface PostsStore {
+  posts: Post[];
+  setPosts: (posts: Post[]) => void;
+  addPost: (post: Post) => void;
+  removePost: (id: number) => void;
+}
 
-export const createUserTwoSlice: StateCreator<UserTwoSlice> = (set) => ({
-  username: "John Doe 2",
-});
+export const useUserStore = create(
+  devtools<UserStore>(
+    (set) => ({
+      username: "John Doe",
+      email: "",
+      setUsername: (username: string) => set(() => ({ username })),
+      setEmail: (email: string) => set(() => ({ email })),
+    }),
+    { name: "user" }
+    // { name: "user", store: "user" }
+  )
+);
 
-export const useAppStore = create(
-  devtools<UserSlice & UserTwoSlice>((...a) => ({
-    ...createUserSlice(...a),
-    ...createUserTwoSlice(...a),
-  }))
+export const usePostsStore = create(
+  devtools<PostsStore>(
+    (set) => ({
+      posts: [],
+      setPosts: (posts: Post[]) => set(() => ({ posts })),
+      addPost: (post: Post) =>
+        set((state) => ({
+          posts: [...state.posts, post],
+        })),
+      removePost: (postId: number) =>
+        set((state) => ({
+          posts: state.posts.filter((post) => post.id !== postId),
+        })),
+    }),
+    { name: "posts" }
+    // { name: "posts", store: "posts" }
+  )
 );

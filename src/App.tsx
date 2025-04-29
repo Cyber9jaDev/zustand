@@ -1,14 +1,14 @@
-import { ChangeEvent } from "react";
+import { ChangeEvent, useState } from "react";
 import "./App.css";
-import { useAppStore } from "./store/user-store";
+import { usePostsStore, useUserStore } from "./store/user-store";
 
 function UpdateUserForm() {
-  const { username, email, setUsername, setEmail } = useAppStore();
+  const { username, email, setUsername, setEmail } = useUserStore();
+
   return (
     <div>
       <input
         type="text"
-        placeholder="Username"
         value={username}
         onChange={(e: ChangeEvent<HTMLInputElement>) =>
           setUsername(e.target.value)
@@ -17,7 +17,6 @@ function UpdateUserForm() {
       <input
         type="email"
         value={email}
-        placeholder="Email"
         onChange={(e: ChangeEvent<HTMLInputElement>) =>
           setEmail(e.target.value)
         }
@@ -27,12 +26,53 @@ function UpdateUserForm() {
 }
 
 function App() {
-  const { email, username } = useAppStore();
+  const { email, username } = useUserStore();
+  const { posts, addPost } = usePostsStore();
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [postIdCounter, setPostIdCounter] = useState(0);
+
   return (
     <>
       <p>{email}</p>
       <p>{username}</p>
       <UpdateUserForm />
+      <div>
+        <b>Create new post</b>
+      </div>
+      <input
+        type="text"
+        value={title}
+        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+          setTitle(e.target.value)
+        }
+      />
+      <input
+        type="text"
+        value={content}
+        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+          setContent(e.target.value)
+        }
+      />
+      <button
+        onClick={() => {
+          addPost({ id: postIdCounter, content, title });
+          setPostIdCounter((prev) => prev + 1);
+          setTitle("");
+          setContent("");
+        }}
+      > Add Post
+      </button>
+
+      <div>
+        <h1>Posts</h1>
+        {posts.map((post) => (
+          <div key={post.id}>
+            <p>{post.title}</p>
+            <p>{post.content}</p>
+          </div>
+        ))}
+      </div>
     </>
   );
 }
