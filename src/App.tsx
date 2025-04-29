@@ -27,7 +27,7 @@ function UpdateUserForm() {
 
 function App() {
   const { email, username } = useUserStore();
-  const { posts, addPost } = usePostsStore();
+  const { posts, addPost, removePost } = usePostsStore();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [postIdCounter, setPostIdCounter] = useState(0);
@@ -56,20 +56,47 @@ function App() {
       />
       <button
         onClick={() => {
+          if(!content || !title) return;
           addPost({ id: postIdCounter, content, title });
           setPostIdCounter((prev) => prev + 1);
           setTitle("");
           setContent("");
         }}
-      > Add Post
+      >
+        {" "}
+        Add Post
       </button>
 
       <div>
         <h1>Posts</h1>
         {posts.map((post) => (
-          <div key={post.id}>
+          <div
+            key={post.id}
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: "10px",
+              border: "1px solid #ccc",
+              padding: "10px",
+              borderRadius: "5px",
+              marginBottom: "10px",
+            }}
+          >
             <p>{post.title}</p>
             <p>{post.content}</p>
+            <button
+              style={{
+                backgroundColor: "red",
+                color: "white",
+                padding: "5px 10px",
+                borderRadius: "5px",
+                cursor: "pointer",
+              }}
+              onClick={() => removePost(post.id)}
+            >
+              Delete
+            </button>
           </div>
         ))}
       </div>
